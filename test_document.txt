@@ -1,0 +1,11 @@
+This is a test documnet with severl erors.
+
+The quick brown fox jumps over the lazy dog this is a very long sentence that continues without proper punctuation and should be flagged as a run-on sentence because it just keeps going and going
+
+some sentences dont start with capital letters
+
+There are  multiple   spaces    between words
+
+This sentence has repeated repeated words in it
+
+The document was written by the student this is passive voice
