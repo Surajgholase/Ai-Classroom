@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: ai-classroom-backend
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn classroom_backend.wsgi:application"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: PYTHONPATH
+        value: /opt/render/project/src/backend
+    rootDir: backend
