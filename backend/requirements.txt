@@ -101,3 +101,4 @@ websockets==15.0.1
 wrapt==2.0.1
 xlsxwriter==3.2.9
 gunicorn==21.2.0
+whitenoise==6.6.0
