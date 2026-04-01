@@ -15,13 +15,7 @@ import os
 from pathlib import Path
 from google import genai
 import environ
-from spellchecker import SpellChecker
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
-import spacy
-import pdfplumber
-import docx
-import textstat
+# Heavy imports moved inside functions to optimize boot time
 import io
 
 # Initialize environ
@@ -382,6 +376,15 @@ class SubmissionViewSet(viewsets.ModelViewSet):
 
     def analyze_ai(self, submission):
         try:
+            import os
+            import re
+            import pdfplumber
+            import docx
+            from spellchecker import SpellChecker
+            import textstat
+            from sklearn.feature_extraction.text import TfidfVectorizer
+            from sklearn.metrics.pairwise import cosine_similarity
+            
             content = ""
             metadata = {"type": "unknown", "pages": 0, "styles": []}
             file_path = submission.file.path

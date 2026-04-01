@@ -7,17 +7,8 @@ import os
 import re
 import environ
 from pathlib import Path
-from spellchecker import SpellChecker
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
-import spacy
-import pdfplumber
-import docx
-from docx import Document
-from docx.shared import Pt, RGBColor
-from docx.enum.text import WD_ALIGN_PARAGRAPH
-import textstat
 from io import BytesIO
+# Heavy imports moved inside functions to optimize boot time
 
 # Initialize environ
 env = environ.Env()
@@ -48,12 +39,14 @@ class ErrorDetector:
     """Detects various types of errors in text"""
     
     def __init__(self):
+        from spellchecker import SpellChecker
         self.spell_checker = SpellChecker()
         self._nlp = None
 
     @property
     def nlp(self):
         if self._nlp is None:
+            from .nlp_utils import get_nlp
             self._nlp = get_nlp()
         return self._nlp
     
@@ -200,6 +193,7 @@ class ErrorDetector:
     
     def detect_clarity_issues(self, text):
         """Detect clarity and readability issues"""
+        import textstat
         errors = []
         
         # Check readability score
@@ -260,6 +254,8 @@ class FileCorrector:
     
     def extract_text_from_file(self, file):
         """Extract text from uploaded file"""
+        import pdfplumber
+        import docx
         try:
             file_name = file.name.lower()
             
@@ -405,6 +401,9 @@ Corrected Text:"""
     
     def create_corrected_docx(self, original_text, corrected_text, errors, error_summary):
         """Create a new DOCX file with corrections"""
+        from docx import Document
+        from docx.shared import Pt
+        from docx.enum.text import WD_ALIGN_PARAGRAPH
         doc = Document()
         
         # Add title
