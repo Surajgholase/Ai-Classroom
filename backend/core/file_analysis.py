@@ -29,9 +29,17 @@ environ.Env.read_env(os.path.join(Path(__file__).resolve().parent.parent, '.env'
 
 # Configure AI API (Groq - Free alternative to Gemini)
 GROQ_API_KEY = env('GROQ_API_KEY', default=None)
+GROQ_BASE_URL = env('GROQ_BASE_URL', default='https://api.groq.com')
+
+# Clean base URL to prevent double /openai/v1 prefix issues
+if GROQ_BASE_URL and GROQ_BASE_URL.endswith('/openai/v1'):
+    GROQ_BASE_URL = GROQ_BASE_URL.replace('/openai/v1', '')
+elif GROQ_BASE_URL and GROQ_BASE_URL.endswith('/openai/v1/'):
+    GROQ_BASE_URL = GROQ_BASE_URL.replace('/openai/v1/', '')
+
 if GROQ_API_KEY:
     from groq import Groq
-    groq_client = Groq(api_key=GROQ_API_KEY)
+    groq_client = Groq(api_key=GROQ_API_KEY, base_url=GROQ_BASE_URL)
 else:
     groq_client = None
 

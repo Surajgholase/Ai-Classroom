@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import { MessageSquare, Send, X, Bot, Sparkles, Trash2, User, Zap, RefreshCw } from 'lucide-react';
+import { MessageSquare, Send, X, Sparkles, Trash2, User, Zap, RefreshCw } from 'lucide-react';
+import logo from '../assets/logo.png';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../api/axios';
 import { clsx } from 'clsx';
@@ -115,8 +116,8 @@ const AIAssistant = ({ classroomId }) => {
                         <header className="ai-gradient-bg p-4 text-white flex justify-between items-center relative overflow-hidden">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
                             <div className="flex items-center gap-3 relative z-10">
-                                <div className="w-10 h-10 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/30 shadow-inner">
-                                    <Bot size={20} className="text-white" />
+                                <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-lg overflow-hidden ring-4 ring-indigo-50/50">
+                                    <img src={logo} className="w-full h-full object-cover" alt="AI" />
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-sm tracking-tight leading-none mb-1">AI Assistant</h3>
@@ -153,11 +154,10 @@ const AIAssistant = ({ classroomId }) => {
                                         msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'
                                     )}
                                 >
-                                    <div className={clsx(
-                                        "w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm",
-                                        msg.role === 'user' ? 'bg-surface-100 text-gray-400' : 'ai-gradient-bg text-white'
-                                    )}>
-                                        {msg.role === 'user' ? <User size={14} /> : <Bot size={14} />}
+                                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 overflow-hidden shadow-sm ${
+                                        msg.role === 'user' ? 'bg-slate-100 text-slate-500' : 'bg-white border border-slate-100'
+                                    }`}>
+                                        {msg.role === 'user' ? <User size={14} /> : <img src={logo} className="w-full h-full object-cover" alt="AI" />}
                                     </div>
                                     <div className={clsx(
                                         "max-w-[80%] p-3 rounded-2xl text-[13px] leading-relaxed shadow-sm",
@@ -174,13 +174,13 @@ const AIAssistant = ({ classroomId }) => {
 
                             {loading && (
                                 <div className="flex justify-start gap-3">
-                                    <div className="w-8 h-8 rounded-lg ai-gradient-bg text-white flex items-center justify-center flex-shrink-0">
-                                        <Bot size={14} />
+                                    <div className="w-8 h-8 rounded-lg bg-white border border-slate-100 flex items-center justify-center shrink-0 overflow-hidden">
+                                        <img src={logo} className="w-full h-full object-cover" alt="AI" />
                                     </div>
                                     <div className="bg-white p-3 rounded-2xl border border-surface-200 shadow-sm flex gap-1.5 items-center">
-                                        <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1 }} className="w-1 h-1 bg-google-blue rounded-full" />
-                                        <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} className="w-1 h-1 bg-google-blue rounded-full" />
-                                        <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} className="w-1 h-1 bg-google-blue rounded-full" />
+                                        <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1 }} className="w-1 h-1 bg-indigo-500 rounded-full" />
+                                        <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} className="w-1 h-1 bg-indigo-500 rounded-full" />
+                                        <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} className="w-1 h-1 bg-indigo-500 rounded-full" />
                                     </div>
                                 </div>
                             )}
@@ -193,7 +193,7 @@ const AIAssistant = ({ classroomId }) => {
                                     <button
                                         key={i}
                                         onClick={() => handleSend(null, suggestion)}
-                                        className="text-[10px] font-bold text-google-blue bg-blue-50 hover:bg-google-blue hover:text-white border border-blue-100 rounded-full px-3 py-1 transition-all"
+                                        className="text-[10px] font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-600 hover:text-white border border-indigo-100 rounded-full px-3 py-1 transition-all"
                                     >
                                         {suggestion}
                                     </button>
@@ -201,12 +201,12 @@ const AIAssistant = ({ classroomId }) => {
                             </div>
                         )}
 
-                        <form onSubmit={handleSend} className="p-4 bg-white border-t border-surface-100">
+                        <form onSubmit={handleSend} className="p-4 bg-white border-t border-slate-100">
                             <div className="relative flex items-center">
                                 <input
                                     type="text"
-                                    placeholder="Message AI Assistant..."
-                                    className="w-full bg-surface-50 border border-surface-200 rounded-xl pl-4 pr-10 py-2.5 text-xs focus:ring-2 focus:ring-google-blue/20 focus:border-google-blue outline-none transition-all"
+                                    placeholder="Message Neural Assistant..."
+                                    className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-4 pr-10 py-2.5 text-xs focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all"
                                     value={message}
                                     onChange={(e) => setMessage(e.target.value)}
                                     disabled={loading}
@@ -214,7 +214,7 @@ const AIAssistant = ({ classroomId }) => {
                                 <button
                                     type="submit"
                                     disabled={!message.trim() || loading}
-                                    className="absolute right-1 p-2 bg-google-blue text-white rounded-lg hover:shadow-lg disabled:opacity-20 transition-all"
+                                    className="absolute right-1 p-2 bg-indigo-600 text-white rounded-lg hover:shadow-lg disabled:opacity-20 transition-all"
                                 >
                                     <Send size={14} />
                                 </button>
@@ -229,14 +229,14 @@ const AIAssistant = ({ classroomId }) => {
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsOpen(!isOpen)}
                 className={clsx(
-                    "w-14 h-14 rounded-2xl shadow-xl flex items-center justify-center text-white transition-all duration-300 relative group overflow-hidden",
-                    isOpen ? 'bg-gray-900 ring-4 ring-gray-900/10' : 'ai-gradient-bg ring-4 ring-google-blue/10'
+                    "w-16 h-16 rounded-[2rem] shadow-2xl flex items-center justify-center text-white transition-all duration-300 relative group overflow-hidden bg-white ring-8 ring-indigo-50/50",
+                    isOpen ? 'bg-slate-900 border-none' : ''
                 )}
             >
                 <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                {isOpen ? <X size={24} /> : <Bot size={24} />}
+                {isOpen ? <X size={28} className={isOpen ? "text-white" : "text-slate-600"} /> : <img src={logo} className="w-full h-full object-cover" alt="AI" />}
                 {!isOpen && (
-                    <div className="absolute top-2 right-2 w-2 h-2 bg-white rounded-full animate-ping"></div>
+                    <div className="absolute top-3 right-3 w-3 h-3 bg-indigo-500 rounded-full animate-ping border-2 border-white"></div>
                 )}
             </motion.button>
         </div>

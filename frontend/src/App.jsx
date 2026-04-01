@@ -15,10 +15,10 @@ const PrivateRoute = ({ children }) => {
     const { user, loading } = useAuth();
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-surface-50">
-                <div className="flex flex-col items-center gap-3">
-                    <div className="w-10 h-10 rounded-full border-2 border-google-blue border-t-transparent animate-spin"></div>
-                    <p className="text-sm text-gray-500 font-medium">Preparing your classroom...</p>
+            <div className="min-h-screen flex items-center justify-center bg-slate-50 font-jakarta">
+                <div className="flex flex-col items-center gap-4">
+                    <div className="w-12 h-12 rounded-2xl border-4 border-indigo-600 border-t-transparent animate-spin shadow-lg"></div>
+                    <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px]">Initializing Neural Link...</p>
                 </div>
             </div>
         );
@@ -30,7 +30,7 @@ function App() {
     return (
         <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
             <AuthProvider>
-                <div className="min-h-screen bg-surface-50">
+                <div className="min-h-screen bg-slate-50/50 font-jakarta">
                     <Toaster position="top-right" />
                     <Routes>
                         <Route path="/login" element={<Login />} />

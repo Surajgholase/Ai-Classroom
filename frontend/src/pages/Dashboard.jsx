@@ -70,29 +70,29 @@ const Dashboard = () => {
     };
 
     return (
-        <div className="flex bg-surface-50 min-h-screen">
+        <div className="flex bg-slate-50/50 min-h-screen font-jakarta">
             <Sidebar />
-            <main className="flex-1 ml-64 p-4 sm:p-6 lg:p-8">
-                <div className="max-w-6xl mx-auto">
-                    <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8 lg:mb-10">
+            <main className="flex-1 ml-64 p-8 lg:p-12">
+                <div className="max-w-7xl mx-auto">
+                    <header className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between mb-12 animate-fade-in">
                         <div>
-                            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 font-outfit">My Classes</h1>
-                            <p className="text-gray-500 mt-1 text-sm sm:text-base">Manage your educational spaces</p>
+                            <h1 className="text-4xl font-extrabold text-slate-800 tracking-tight">My Classrooms</h1>
+                            <p className="text-slate-500 mt-2 font-medium">Manage and explore your learning environments</p>
                         </div>
-                        <div className="flex items-center justify-between sm:justify-end gap-3">
+                        <div className="flex items-center gap-4">
                             <NotificationCenter />
-                            <div className="hidden sm:block h-8 w-px bg-surface-200 mx-1 sm:mx-2"></div>
+                            <div className="h-10 w-px bg-slate-200 mx-2"></div>
                             {user?.role === 'student' ? (
                                 <button
                                     onClick={() => setShowJoinModal(true)}
-                                    className="google-button google-button-primary whitespace-nowrap"
+                                    className="btn-primary"
                                 >
                                     <UserPlus size={20} /> Join Class
                                 </button>
                             ) : (
                                 <button
                                     onClick={() => setShowCreateModal(true)}
-                                    className="google-button google-button-primary whitespace-nowrap"
+                                    className="btn-primary"
                                 >
                                     <Plus size={20} /> Create Class
                                 </button>
@@ -100,104 +100,140 @@ const Dashboard = () => {
                         </div>
                     </header>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        {classrooms.map((cls) => (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                        {classrooms.map((cls, index) => (
                             <div
                                 key={cls.id}
                                 onClick={() => navigate(`/classroom/${cls.id}`)}
-                                className="google-card group cursor-pointer h-72 flex flex-col"
+                                className="glass-card group cursor-pointer flex flex-col h-80 animate-fade-up overflow-hidden"
+                                style={{ animationDelay: `${index * 0.05}s` }}
                             >
-                                <div className="h-24 bg-google-blue p-5 relative overflow-hidden">
-                                    <div className="absolute top-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <MoreVertical className="text-white" size={20} />
-                                    </div>
-                                    <h3 className="text-white font-semibold text-xl truncate pr-6">{cls.name}</h3>
-                                    <p className="text-white/80 text-sm">{cls.section}</p>
-                                </div>
-                                <div className="flex-1 p-5 relative">
-                                    <div className="absolute -top-8 right-6 w-16 h-16 rounded-full bg-white border border-surface-200 shadow-md flex items-center justify-center font-bold text-2xl text-google-blue">
-                                        {cls.faculty_name?.charAt(0).toUpperCase()}
-                                    </div>
-                                    <div className="mt-4">
-                                        <p className="text-sm font-medium text-gray-900">{cls.faculty_name}</p>
-                                    </div>
-                                </div>
-                                <div className="p-3 border-t border-surface-100 flex justify-between items-center gap-2">
-                                    <div className="w-8 h-8 rounded-full hover:bg-surface-100 flex items-center justify-center text-gray-500">
-                                        <BookOpen size={18} />
-                                    </div>
-                                    {user?.role === 'faculty' && (
-                                        <button
-                                            onClick={(e) => handleDeleteClassroom(cls.id, e)}
-                                            className="w-8 h-8 rounded-full hover:bg-red-50 flex items-center justify-center text-red-500 hover:text-red-700 transition-colors"
-                                            title="Delete classroom"
-                                        >
-                                            <Trash2 size={16} />
+                                <div className="h-32 bg-gradient-to-br from-indigo-500 via-indigo-600 to-violet-700 p-6 relative">
+                                    <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
+                                        <button className="p-2 bg-white/20 backdrop-blur-md rounded-lg text-white border border-white/30 hover:bg-white/30 transition-colors">
+                                            <MoreVertical size={18} />
                                         </button>
-                                    )}
+                                    </div>
+                                    <h3 className="text-white font-bold text-xl truncate pr-8 mb-1">{cls.name}</h3>
+                                    <span className="px-2 py-1 bg-white/20 backdrop-blur-md rounded-md text-[10px] font-bold text-white uppercase tracking-wider border border-white/20">
+                                        {cls.section || 'General'}
+                                    </span>
+                                </div>
+                                
+                                <div className="flex-1 p-6 flex flex-col justify-between">
+                                    <div className="relative">
+                                        <div className="absolute -top-12 right-0 w-14 h-14 rounded-2xl bg-white border border-slate-100 shadow-xl shadow-indigo-100 flex items-center justify-center font-bold text-xl text-indigo-600 z-10">
+                                            {cls.faculty_name?.charAt(0).toUpperCase()}
+                                        </div>
+                                        <div className="mt-2">
+                                            <p className="text-sm font-bold text-slate-800">{cls.faculty_name}</p>
+                                            <p className="text-xs font-medium text-slate-400 mt-0.5">Faculty Lead</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center justify-between pt-4 border-t border-slate-50">
+                                        <div className="flex -space-x-2">
+                                            {[1, 2, 3].map((i) => (
+                                                <div key={i} className="w-7 h-7 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center text-[10px] font-bold text-slate-400 uppercase">
+                                                    ST
+                                                </div>
+                                            ))}
+                                            <div className="w-7 h-7 rounded-full bg-indigo-50 border-2 border-white flex items-center justify-center text-[10px] font-bold text-indigo-400">
+                                                +12
+                                            </div>
+                                        </div>
+                                        <div className="flex gap-2">
+                                            {user?.role === 'faculty' && (
+                                                <button
+                                                    onClick={(e) => handleDeleteClassroom(cls.id, e)}
+                                                    className="p-2 rounded-lg text-rose-400 hover:bg-rose-50 hover:text-rose-500 transition-colors"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         ))}
                     </div>
-
                 </div>
 
-                {/* Join Modal */}
+                {/* Modals with Premium Styling */}
                 {showJoinModal && (
-                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                        <div className="bg-white rounded-2xl p-8 max-w-sm w-full shadow-2xl">
-                            <h2 className="text-xl font-bold mb-4">Join Class</h2>
+                    <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-md flex items-center justify-center z-50 p-6 animate-fade-in">
+                        <div className="bg-white rounded-[2.5rem] p-10 max-w-md w-full shadow-[0_32px_64px_-12px_rgba(0,0,0,0.2)] animate-scale-in">
+                            <h2 className="text-2xl font-bold text-slate-800 mb-2">Join Class</h2>
+                            <p className="text-slate-500 mb-8 font-medium">Enter the classroom code provided by your faculty.</p>
                             <form onSubmit={handleJoinClass}>
-                                <input
-                                    type="text"
-                                    placeholder="Class code"
-                                    className="google-input mb-4"
-                                    value={classCode}
-                                    onChange={(e) => setClassCode(e.target.value)}
-                                    required
-                                />
-                                <div className="flex justify-end gap-3">
-                                    <button type="button" onClick={() => setShowJoinModal(false)} className="px-4 py-2 text-gray-500">Cancel</button>
-                                    <button type="submit" className="google-button google-button-primary">Join</button>
+                                <div className="space-y-6 mb-8">
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Class Code</label>
+                                        <input
+                                            type="text"
+                                            placeholder="Ex: ABC-123"
+                                            className="premium-input text-center text-lg font-bold tracking-widest uppercase"
+                                            value={classCode}
+                                            onChange={(e) => setClassCode(e.target.value)}
+                                            required
+                                        />
+                                    </div>
+                                </div>
+                                <div className="flex gap-4">
+                                    <button type="button" onClick={() => setShowJoinModal(false)} className="btn-secondary flex-1">Nevermind</button>
+                                    <button type="submit" className="btn-primary flex-1">Join</button>
                                 </div>
                             </form>
                         </div>
                     </div>
                 )}
 
-                {/* Create Modal */}
                 {showCreateModal && (
-                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                        <div className="bg-white rounded-2xl p-8 max-w-sm w-full shadow-2xl">
-                            <h2 className="text-xl font-bold mb-4">Create Class</h2>
-                            <form onSubmit={handleCreateClass} className="space-y-4">
-                                <input
-                                    type="text"
-                                    placeholder="Class name"
-                                    className="google-input"
-                                    value={newClass.name}
-                                    onChange={(e) => setNewClass({ ...newClass, name: e.target.value })}
-                                    required
-                                />
-                                <input
-                                    type="text"
-                                    placeholder="Section"
-                                    className="google-input"
-                                    value={newClass.section}
-                                    onChange={(e) => setNewClass({ ...newClass, section: e.target.value })}
-                                    required
-                                />
-                                <input
-                                    type="text"
-                                    placeholder="Subject Code"
-                                    className="google-input"
-                                    value={newClass.subject_code}
-                                    onChange={(e) => setNewClass({ ...newClass, subject_code: e.target.value })}
-                                    required
-                                />
-                                <div className="flex justify-end gap-3 mt-4">
-                                    <button type="button" onClick={() => setShowCreateModal(false)} className="px-4 py-2 text-gray-500">Cancel</button>
-                                    <button type="submit" className="google-button google-button-primary">Create</button>
+                    <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-md flex items-center justify-center z-50 p-6 animate-fade-in">
+                        <div className="bg-white rounded-[2.5rem] p-10 max-w-md w-full shadow-[0_32px_64px_-12px_rgba(0,0,0,0.2)] animate-scale-in">
+                            <h2 className="text-2xl font-bold text-slate-800 mb-2">Create New Class</h2>
+                            <p className="text-slate-500 mb-8 font-medium">Set up your new workspace for students to join.</p>
+                            <form onSubmit={handleCreateClass} className="space-y-6">
+                                <div className="space-y-4">
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Classroom Name</label>
+                                        <input
+                                            type="text"
+                                            className="premium-input"
+                                            placeholder="Ex: Computer Science 101"
+                                            value={newClass.name}
+                                            onChange={(e) => setNewClass({ ...newClass, name: e.target.value })}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Section</label>
+                                            <input
+                                                type="text"
+                                                className="premium-input"
+                                                placeholder="Ex: Group A"
+                                                value={newClass.section}
+                                                onChange={(e) => setNewClass({ ...newClass, section: e.target.value })}
+                                                required
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Subject Code</label>
+                                            <input
+                                                type="text"
+                                                className="premium-input"
+                                                placeholder="CS101"
+                                                value={newClass.subject_code}
+                                                onChange={(e) => setNewClass({ ...newClass, subject_code: e.target.value })}
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="flex gap-4 pt-4">
+                                    <button type="button" onClick={() => setShowCreateModal(false)} className="btn-secondary flex-1">Cancel</button>
+                                    <button type="submit" className="btn-primary flex-1">Create Class</button>
                                 </div>
                             </form>
                         </div>
