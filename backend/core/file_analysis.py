@@ -35,7 +35,7 @@ if GROQ_API_KEY:
 else:
     groq_client = None
 
-nlp = spacy.load("en_core_web_sm")
+
 
 # Helper function to extract file content
 def extract_file_content(file):

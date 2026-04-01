@@ -43,7 +43,7 @@ if GEMINI_API_KEY:
 else:
     genai_client = None
 
-nlp = spacy.load("en_core_web_sm")
+from .nlp_utils import get_nlp
 
 @api_view(['GET'])
 @permission_classes([permissions.AllowAny])
@@ -456,7 +456,7 @@ class SubmissionViewSet(viewsets.ModelViewSet):
             skip_words = {'aiml', 'proteus', 'matlab', 'github', 'api', 'json', 'html', 'css', 'dsp', 'fsk'}
             
             # Use spaCy to detect proper nouns (names, organizations, locations)
-            doc_nlp = nlp(content[:5000])  # Process first 5000 chars for NER
+            doc_nlp = get_nlp()(content[:5000])  # Process first 5000 chars for NER
             proper_nouns = set()
             for ent in doc_nlp.ents:
                 # Skip entities that are names, organizations, or locations
@@ -508,7 +508,7 @@ class SubmissionViewSet(viewsets.ModelViewSet):
                     break
 
             # Grammar/Clarity
-            doc = nlp(content[:3000])
+            doc = get_nlp()(content[:3000])
             suggestions = []
             grammar_errors = []
             

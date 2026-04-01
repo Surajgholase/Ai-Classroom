@@ -40,8 +40,7 @@ if GEMINI_API_KEY:
 else:
     gemini_model = None
 
-# Load NLP model
-nlp = spacy.load("en_core_web_sm")
+from .nlp_utils import get_nlp
 spell_checker = SpellChecker()
 
 
@@ -50,7 +49,13 @@ class ErrorDetector:
     
     def __init__(self):
         self.spell_checker = SpellChecker()
-        self.nlp = nlp
+        self._nlp = None
+
+    @property
+    def nlp(self):
+        if self._nlp is None:
+            self._nlp = get_nlp()
+        return self._nlp
     
     def detect_spelling_errors(self, text):
         """Detect spelling errors with context"""
