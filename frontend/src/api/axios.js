@@ -15,9 +15,17 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
     (response) => response,
     (error) => {
+        // Only redirect on 401 if it's not the login request itself
         if (error.response && error.response.status === 401) {
-            localStorage.removeItem('token');
-            window.location.href = '/login';
+            const isLoginRequest = error.config.url.includes('token/') && error.config.method === 'post';
+            
+            if (!isLoginRequest) {
+                localStorage.removeItem('token');
+                // Avoid infinite redirect loop
+                if (window.location.pathname !== '/login') {
+                    window.location.href = '/login';
+                }
+            }
         }
         return Promise.reject(error);
     }
