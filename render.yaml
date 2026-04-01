@@ -3,7 +3,7 @@ services:
     name: ai-classroom-backend
     env: python
     buildCommand: "./build.sh"
-    startCommand: "gunicorn classroom_backend.wsgi:application"
+    startCommand: "gunicorn classroom_backend.wsgi:application --workers 1 --threads 2 --timeout 120"
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0

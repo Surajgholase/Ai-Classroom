@@ -533,28 +533,38 @@ class SubmissionViewSet(viewsets.ModelViewSet):
                 # If textstat fails, default to 0
                 readability = 0
             
-            # Plagiarism
-            other_submissions = Submission.objects.filter(assignment=submission.assignment).exclude(id=submission.id)
+            # Plagiarism (Optimized for limited RAM)
             similarity_score = 0.0
             matched_text = ""
             
-            if other_submissions.exists():
-                texts = [content]
-                for other in other_submissions:
+            # Only run plagiarism check if there aren't too many submissions
+            # and limit the comparison to first 10 to prevent OOM
+            other_submissions = Submission.objects.filter(assignment=submission.assignment).exclude(id=submission.id)
+            
+            if other_submissions.exists() and len(content) > 100:
+                texts = [content[:5000]] # Compare first 5000 chars
+                for other in other_submissions[:10]: 
                     try:
-                        other.file.open('rb')
-                        texts.append(other.file.read().decode('utf-8', errors='ignore'))
-                        other.file.close()
+                        # For simplicity, we only compare against text-based submissions 
+                        # or skip deep parsing here to save memory. 
+                        # Ideally, extracted text should be stored in the DB.
+                        if other.file.name.lower().endswith('.txt'):
+                            other.file.open('rb')
+                            texts.append(other.file.read().decode('utf-8', errors='ignore')[:5000])
+                            other.file.close()
                     except:
-                        texts.append("")
+                        continue
                 
                 if len(texts) > 1:
-                    vectorizer = TfidfVectorizer(stop_words='english').fit_transform(texts)
-                    vectors = vectorizer.toarray()
-                    cosine_sim = cosine_similarity(vectors)
-                    max_sim = max(cosine_sim[0][1:]) if len(cosine_sim[0]) > 1 else 0
-                    similarity_score = round(max_sim * 100, 2)
-                    matched_text = "Similar patterns found." if similarity_score > 40 else ""
+                    try:
+                        vectorizer = TfidfVectorizer(stop_words='english', max_features=1000).fit_transform(texts)
+                        vectors = vectorizer.toarray()
+                        cosine_sim = cosine_similarity(vectors)
+                        max_sim = max(cosine_sim[0][1:]) if len(cosine_sim[0]) > 1 else 0
+                        similarity_score = round(max_sim * 100, 2)
+                        matched_text = "Similar patterns found." if similarity_score > 40 else ""
+                    except Exception as plag_err:
+                        print(f"Plagiarism check error: {plag_err}")
 
             # Formatting & Instruction Check (Gemini)
             formatting_result = {}
