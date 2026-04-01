@@ -16,7 +16,6 @@ environ.Env.read_env(os.path.join(Path(__file__).resolve().parent.parent, '.env'
 
 # Configure AI API
 GROQ_API_KEY = env('GROQ_API_KEY', default=None)
-GEMINI_API_KEY = env('GEMINI_API_KEY', default=None)
 
 if GROQ_API_KEY:
     from groq import Groq
@@ -24,12 +23,6 @@ if GROQ_API_KEY:
 else:
     groq_client = None
 
-if GEMINI_API_KEY:
-    import google.generativeai as genai
-    genai.configure(api_key=GEMINI_API_KEY)
-    gemini_model = genai.GenerativeModel('gemini-pro')
-else:
-    gemini_model = None
 
 from .nlp_utils import get_nlp
 
@@ -287,7 +280,7 @@ class FileCorrector:
     
     def correct_text_with_ai(self, text, errors):
         """Use AI to correct text based on detected errors"""
-        if not groq_client and not gemini_model:
+        if not groq_client:
             return self.correct_text_basic(text, errors)
         
         # Prepare error summary for AI
@@ -342,9 +335,6 @@ Corrected Text:"""
                 )
                 return response.choices[0].message.content.strip()
             
-            elif gemini_model:
-                response = gemini_model.generate_content(prompt)
-                return response.text.strip()
         
         except Exception as e:
             print(f"AI correction failed: {e}")

@@ -13,7 +13,6 @@ import random
 import string
 import os
 from pathlib import Path
-from google import genai
 import environ
 # Heavy imports moved inside functions to optimize boot time
 import io
@@ -30,12 +29,6 @@ if GROQ_API_KEY:
 else:
     groq_client = None
 
-# Configure Gemini API (new google.genai package)
-GEMINI_API_KEY = env('GEMINI_API_KEY', default=None)
-if GEMINI_API_KEY:
-    genai_client = genai.Client(api_key=GEMINI_API_KEY)
-else:
-    genai_client = None
 
 from .nlp_utils import get_nlp
 
@@ -137,7 +130,7 @@ class ClassroomViewSet(viewsets.ModelViewSet):
             
             # Fallback if no API key
             return Response({
-                'response': f"Hello {user.username}! I am currently running in limited mode because the Gemini API key is not configured. "
+                'response': f"Hello {user.username}! I am currently running in limited mode because the Groq API key is not configured. "
                             f"You have {classrooms.count()} classrooms and {pending_count} pending assignments across all your classes."
             })
         except Exception as e:
@@ -249,7 +242,7 @@ class ClassroomViewSet(viewsets.ModelViewSet):
                     avg = sum(grades) / len(grades)
                     context += f"\nUser Performance: {len(grades)} graded tasks, Average Score: {avg:.1f} points.\n"
 
-            if genai_client:
+            if groq_client:
                 try:
                     system_instruction = (
                         f"You are the Classroom AI Assistant for '{classroom.name}'. "
@@ -258,6 +251,7 @@ class ClassroomViewSet(viewsets.ModelViewSet):
                         "If they ask about deadlines, list the upcoming ones. "
                         "Always be encouraging, precise, and educational. Use markdown."
                     )
+                    
                     full_prompt = (
                         f"{system_instruction}\n\n"
                         f"### Context: {classroom.name}\n"
@@ -265,11 +259,16 @@ class ClassroomViewSet(viewsets.ModelViewSet):
                         f"### User Message\n{user_query}"
                     )
                     
-                    response = genai_client.models.generate_content(
-                        model='gemini-1.5-flash',
-                        contents=full_prompt
+                    response = groq_client.chat.completions.create(
+                        model=env('GROQ_MODEL', default="llama-3.3-70b-versatile"),
+                        messages=[
+                            {"role": "system", "content": system_instruction},
+                            {"role": "user", "content": f"Context data:\n{context}\n\nQuestion: {user_query}"}
+                        ],
+                        temperature=0.7,
+                        max_tokens=1000
                     )
-                    response_text = response.text if response.text else "I failed to process that request. Try asking about specific classroom details like deadlines or your grades."
+                    response_text = response.choices[0].message.content
                     return Response({'response': response_text})
                 except Exception as ai_err:
                     return Response({'response': f"Classroom AI Error: {str(ai_err)}"}, status=status.HTTP_200_OK)
@@ -290,7 +289,7 @@ class ClassroomViewSet(viewsets.ModelViewSet):
                 else:
                     response = "Good news! There are no upcoming deadlines at the moment."
             else:
-                response = "I'm currently running in low-power mode. Please add a Gemini API Key to enable full AI intelligence!"
+                response = "I'm currently running in low-power mode. Please add a Groq API Key to enable full AI intelligence!"
                 
             return Response({'response': response})
         except Exception as e:
