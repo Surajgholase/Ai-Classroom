@@ -32,7 +32,7 @@ else:
     gemini_model = None
 
 from .nlp_utils import get_nlp
-spell_checker = SpellChecker()
+
 
 
 class ErrorDetector:
